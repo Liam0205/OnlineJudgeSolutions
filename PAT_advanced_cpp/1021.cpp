@@ -39,7 +39,7 @@ struct Graph {
     }
 
     inline
-    const void dfs_graph(const id_type& id, const size_type& search_depth, bool visit_record[],
+    const void dfs(const id_type& id, const size_type& search_depth, bool visit_record[],
             size_type* max_depth, std::vector<id_type>* farthest_nodes, bool update = false) const {
         if (update and search_depth > *max_depth) {
             farthest_nodes->clear();
@@ -53,7 +53,7 @@ struct Graph {
 
         for (const auto& aid : this->amtx[id]) {
             if (not(visit_record[aid])) {
-                dfs_graph(aid, search_depth + 1, visit_record, max_depth, farthest_nodes, update);
+                dfs(aid, search_depth + 1, visit_record, max_depth, farthest_nodes, update);
             } else {}
         }
     }
@@ -70,7 +70,7 @@ int main() {
     Graph::size_type max_depth = 0;
     std::vector<Graph::id_type> farthest_nodes;
     farthest_nodes.resize(graph_size + 1);
-    graph.dfs_graph(1, 1, visit_record, &max_depth, &farthest_nodes, true);  // update records
+    graph.dfs(1, 1, visit_record, &max_depth, &farthest_nodes, true);  // update records
     std::set<Graph::id_type> nodes_in_path(farthest_nodes.begin(), farthest_nodes.end());
 
     // go through all nodes
@@ -79,7 +79,7 @@ int main() {
         const Graph::id_type id = loop + 1;
         if (not(visit_record[id])) {
             ++parts;
-            graph.dfs_graph(id, 1, visit_record, &max_depth, &farthest_nodes, false);
+            graph.dfs(id, 1, visit_record, &max_depth, &farthest_nodes, false);
         }
     }
 
@@ -91,7 +91,7 @@ int main() {
         std::fill(visit_record, visit_record + graph_size + 1, false);  // clean all records
         max_depth = 0;
         farthest_nodes.clear();
-        graph.dfs_graph(root, 1, visit_record, &max_depth, &farthest_nodes, true);
+        graph.dfs(root, 1, visit_record, &max_depth, &farthest_nodes, true);
         nodes_in_path.insert(farthest_nodes.begin(), farthest_nodes.end());
         for (const auto& id : nodes_in_path) {
             std::cout << id << std::endl;
