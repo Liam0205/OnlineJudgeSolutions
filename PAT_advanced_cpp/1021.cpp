@@ -1,10 +1,14 @@
 #define LIAM_TEST_
+#define ADJACENT_TABLE_VECTOR_
 
 #include <iostream>
 #include <vector>
 #include <set>
+#ifdef ADJACENT_TABLE_VECTOR_
+#else
 #include <unordered_set>
 #include <unordered_map>
+#endif
 #include <algorithm>
 
 #ifdef LIAM_TEST_
@@ -18,22 +22,49 @@ using std::cin;
 struct Graph {
     typedef size_t size_type;
     typedef size_t id_type;
+#ifdef ADJACENT_TABLE_VECTOR_
+    typedef std::vector<std::vector<id_type>> adjacent_table;
+#else
     typedef std::unordered_map<id_type, std::unordered_set<id_type>> adjacent_table;
+#endif
 
     size_type graph_size = 0;
     adjacent_table atbl;
 
+#ifdef ADJACENT_TABLE_VECTOR_
+#else
     inline
-    const size_type init_graph(std::istream* pistrm) {
+    void update_edge(adjacent_table* atbl, const id_type& start, const id_type& end) {
+        adjacent_table::iterator iter = atbl->find(start);
+        bool found = (iter != atbl->end());
+        if (found) {
+            iter->second.insert(end);
+        } else {
+            std::unordered_set<id_type> tmp;
+            tmp.insert(end);
+            atbl->insert(std::make_pair(start, tmp));
+        }
+    }
+#endif
+    inline
+    const size_type init(std::istream* pistrm) {
         auto& istrm = *pistrm;
 
         istrm >> graph_size;
+#ifdef ADJACENT_TABLE_VECTOR_
+        atbl.resize(graph_size + 1);  // `graph_size` nodes need `graph_size + 1` slots
+#endif
 
         id_type start, end;
         for (size_type i = 0; i != graph_size - 1; ++i) {
             istrm >> start >> end;
-            atbl[start].insert(end);
-            atbl[end].insert(start);
+#ifdef ADJACENT_TABLE_VECTOR_
+            atbl[start].push_back(end);
+            atbl[end].push_back(start);
+#else
+            update_edge(&(this->atbl), start, end);
+            update_edge(&(this->atbl), end, start);
+#endif
         }
 
         return graph_size;
@@ -63,7 +94,7 @@ struct Graph {
 int main() {
     // init the graph
     Graph graph;
-    const auto graph_size = graph.init_graph(&cin);
+    const auto graph_size = graph.init(&cin);
 
     // start deep first search, from the first node
     bool visit_record[graph_size + 1];
