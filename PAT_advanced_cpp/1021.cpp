@@ -40,7 +40,7 @@ struct Graph {
 
     inline
     const void dfs_graph(const id_type& id, const size_type& search_depth, bool visit_record[],
-                  size_type* max_depth, std::vector<id_type>* farthest_nodes, bool update = false) {
+            size_type* max_depth, std::vector<id_type>* farthest_nodes, bool update = false) const {
         if (update and search_depth > *max_depth) {
             farthest_nodes->clear();
             farthest_nodes->push_back(id);
