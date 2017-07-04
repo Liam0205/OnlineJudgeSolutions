@@ -80,7 +80,7 @@ int main() {
         if (not(visit_record[id])) {
             ++parts;
             graph.dfs(id, 1, visit_record, &max_depth, &farthest_nodes, false);
-        }
+        } else ()
     }
 
     // check parts
