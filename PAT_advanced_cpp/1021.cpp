@@ -19,20 +19,20 @@ struct Graph {
     typedef std::vector<std::vector<id_type>> adjacent_matrix;
 
     size_type graph_size = 0;
-    adjacent_matrix amtx;
+    adjacent_matrix atbl;
 
     inline
     const size_type init_graph(std::istream* pistrm) {
         auto& istrm = *pistrm;
 
         istrm >> graph_size;
-        amtx.resize(graph_size + 1);  // `graph_size` nodes need `graph_size + 1` slots
+        atbl.resize(graph_size + 1);  // `graph_size` nodes need `graph_size + 1` slots
 
         id_type start, end;
         for (size_type i = 0; i != graph_size - 1; ++i) {
             istrm >> start >> end;
-            amtx[start].push_back(end);
-            amtx[end].push_back(start);
+            atbl[start].push_back(end);
+            atbl[end].push_back(start);
         }
 
         return graph_size;
@@ -51,7 +51,7 @@ struct Graph {
 
         visit_record[id] = true;
 
-        for (const auto& aid : this->amtx[id]) {
+        for (const auto& aid : this->atbl[id]) {
             if (not(visit_record[aid])) {
                 dfs(aid, search_depth + 1, visit_record, max_depth, farthest_nodes, update);
             } else {}
