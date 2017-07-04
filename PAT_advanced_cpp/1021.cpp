@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 #ifdef LIAM_TEST_
@@ -16,23 +18,22 @@ using std::cin;
 struct Graph {
     typedef size_t size_type;
     typedef size_t id_type;
-    typedef std::vector<std::vector<id_type>> adjacent_matrix;
+    typedef std::unordered_map<id_type, std::unordered_set<id_type>> adjacent_table;
 
     size_type graph_size = 0;
-    adjacent_matrix atbl;
+    adjacent_table atbl;
 
     inline
     const size_type init_graph(std::istream* pistrm) {
         auto& istrm = *pistrm;
 
         istrm >> graph_size;
-        atbl.resize(graph_size + 1);  // `graph_size` nodes need `graph_size + 1` slots
 
         id_type start, end;
         for (size_type i = 0; i != graph_size - 1; ++i) {
             istrm >> start >> end;
-            atbl[start].push_back(end);
-            atbl[end].push_back(start);
+            atbl[start].insert(end);
+            atbl[end].insert(start);
         }
 
         return graph_size;
@@ -51,7 +52,7 @@ struct Graph {
 
         visit_record[id] = true;
 
-        for (const auto& aid : this->atbl[id]) {
+        for (const auto& aid : this->atbl.at(id)) {
             if (not(visit_record[aid])) {
                 dfs(aid, search_depth + 1, visit_record, max_depth, farthest_nodes, update);
             } else {}
@@ -80,7 +81,7 @@ int main() {
         if (not(visit_record[id])) {
             ++parts;
             graph.dfs(id, 1, visit_record, &max_depth, &farthest_nodes, false);
-        } else ()
+        } else {}
     }
 
     // check parts
