@@ -1,14 +1,15 @@
 #define LIAM_TEST_
 
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <iomanip>
+#include <string>
 #include <algorithm>
 #include <vector>
 
 #ifdef LIAM_TEST_
 #include <fstream>
-constexpr const char* casefname = "./cases/1002.case.txt";
+constexpr const char* casefname = "./cases/1002.2.case.txt";
 std::ifstream cin(casefname);
 #else
 using std::cin;
@@ -49,13 +50,14 @@ void accumulate_poly(const std::string& buffer, std::vector<double>* poly) {
 
 inline
 std::ostream& print_poly(const std::vector<double>& poly, std::ostream& ostrm) {
+    ostrm << std::fixed;
     ostrm <<
       std::count_if(poly.begin(), poly.end(), [](double coefficient){return (coefficient != 0.0);});
     for (size_t loop = 0; loop != MAX_POLY_EXPONENT + 1; ++loop) {
         size_t exponent = MAX_POLY_EXPONENT - loop;
         double coefficient = poly[exponent];
         if (coefficient != 0.0) {
-            ostrm << " " << exponent << " " << coefficient;
+            ostrm << " " << exponent << " " << std::setprecision(1) << coefficient;
         }
     }
     return ostrm;
