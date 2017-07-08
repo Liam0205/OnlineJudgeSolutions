@@ -54,12 +54,15 @@ void accumulate_poly(const std::string& buffer, std::map<exp_t, coeff_t>* poly) 
 inline
 std::ostream& print_poly(std::ostream& ostrm, const std::map<exp_t, coeff_t>& poly) {
     ostrm << std::fixed;
-    ostrm << poly.size();
+    ostrm << std::count_if(poly.begin(), poly.end(),
+                         [&](const std::pair<exp_t, coeff_t> pair){ return (pair.second != 0.0); });
 
     for (auto iter = poly.crbegin(); iter != poly.crend(); ++iter) {
         exp_t exponent = iter->first;
         coeff_t coefficient = iter->second;
-        ostrm << " " << exponent << " " << std::setprecision(1) << coefficient;
+        if (coefficient != 0.0) {
+            ostrm << " " << exponent << " " << std::setprecision(1) << coefficient;
+        }
     }
 
     return ostrm;
