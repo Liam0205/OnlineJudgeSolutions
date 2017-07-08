@@ -42,7 +42,7 @@ void accumulate_poly(const std::string& buffer, std::vector<double>* poly) {
 
     size_t exponent;
     double coefficient;
-    for (size_t loop; loop != count; ++loop) {
+    for (size_t loop = 0; loop != count; ++loop) {
         iss >> exponent >> coefficient;
         poly->operator[](exponent) += coefficient;
     }
